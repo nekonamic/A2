@@ -18,10 +18,12 @@ LogHandler = AlbumCollection()
 
 class AlbumTrackerApp(App):
 
-    def build(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         LogHandler.load_albums()
-        self.clear_albums_box()
         self.create_albums_box()
+
+    def build(self):
         self.title = "Album Tracker 2.0"
         self.root = Builder.load_file("app.kv")
         return self.root
@@ -33,9 +35,10 @@ class AlbumTrackerApp(App):
         self.root.ids.albums_box.clear_widgets()
 
     def create_albums_box(self):
-        for serial, row in enumerate(LogHandler.list_of_albums):
-            temp_button = Button(id="{} by {},({})".format(row[0], row[1], row[2]), background_color=())
-            if row[3] == "r":
+        for serial, album in enumerate(LogHandler.list_of_albums):
+            temp_button = Button(text="{} by {},({})".format(album.title, album.artist, album.year),
+                                 id=serial, background_color=())
+            if album.c_or_r == "r":
                 temp_button = Button(background_color=(1.0, 0.0, 0.0, 1.0))
             temp_button.bind(on_press=self.press_down_button(serial))
 
